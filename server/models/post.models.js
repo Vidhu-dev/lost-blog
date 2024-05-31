@@ -17,20 +17,24 @@ const postSchema = mongoose.Schema(
     status: {
       type: String,
       enum: ['draft', 'published', 'archived', 'scheduled'],
+      default: 'draft',
+      required: true,
     },
     publishedAt: {
-      type: String,
+      type: Date,
     },
     categoryID: {
       type: Schema.Types.ObjectId,
       ref: 'Category',
       required: true,
     },
-    imageURL: [
-      {
-        type: String,
-      },
-    ],
+    coverImage: {
+      type: String,
+    },
+    likes: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

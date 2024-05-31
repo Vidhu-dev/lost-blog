@@ -1,13 +1,13 @@
-import mongoose from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
 const tagSchema = mongoose.Schema({
   tagName: {
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-    required: true,
+  postID: {
+    type: Schema.Types.ObjectId,
+    ref: 'Post',
   },
 })
 
