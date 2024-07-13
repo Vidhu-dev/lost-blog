@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createTag, getTags, getPostByTag  } from '../controllers/tag.controllers.js'
+import { createTag, getTags, getPostByTag  } from '../controllers/tag.controller.js'
 import { verfiyJWT } from '../middleware/user.middleware.js'
 
 const router = Router()

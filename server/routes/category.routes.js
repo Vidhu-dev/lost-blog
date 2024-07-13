@@ -2,7 +2,7 @@ import { Router } from 'express'
 import {
   createCategories,
   createCategory,
-} from '../controllers/category.controllers.js'
+} from '../controllers/category.controller.js'
 import { verfiyJWT } from '../middleware/user.middleware.js'
 
 const router = Router()

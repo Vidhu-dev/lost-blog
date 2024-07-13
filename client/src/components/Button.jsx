@@ -1,7 +1,19 @@
-function Button({ primary, children, secondry, className }) {
+function Button({
+  type,
+  primary,
+  children,
+  secondry,
+  className,
+  padding = "px-4 py-1.5",
+  margin = "my-2",
+  onClick,
+  dark,
+}) {
   return (
     <button
-      className={` ${className} ${primary ? "bg-primary text-background-100" : secondry ? "bg-secondry" : "bg-background-400"} rounded-full px-4 py-1.5 font-bold text-text outline outline-1 outline-background-500`}
+      className={` ${className} ${primary ? "bg-primary text-background-100" : secondry ? "bg-secondry" : dark ? "bg-text" : "bg-background-400 text-text"} ${padding} font-bold text-background-100 ${margin}`}
+      onClick={onClick}
+      type={type}
     >
       {children}
     </button>

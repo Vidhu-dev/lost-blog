@@ -1,12 +1,11 @@
-// import WriteSvg from "../../assets/WriteSvg";
-// import ReadSvg from "../../assets/ReadSvg";
 import Button from "../../components/Button";
 import BoyLookingUp from "../../assets/BoyLookingUp";
 import DisplayBoard from "../../assets/DisplayBoard";
-import useWindowWidth from "../../hooks/useWindowWidth";
+import { useWindowWidth } from "../../hooks/useWindowWidth";
+import { useNavigate } from "react-router-dom";
 function Home() {
   const windowWidth = useWindowWidth();
-  // console.log(windowWidth);
+  const naviagte = useNavigate();
   return (
     <div className="relative flex grow justify-center">
       <div className="absolute left-4 top-16 opacity-20 sm:hidden">
@@ -14,14 +13,14 @@ function Home() {
       </div>
       <div className="relative mx-6 flex w-fit justify-center sm:mx-16 sm:flex-nowrap sm:gap-10">
         <div className="z-50 flex flex-col items-start justify-center gap-8">
-          <h1 className="max-w-96 text-6xl font-bold md:text-8xl">
-            Explore Learn and Inspire
+          <h1 className="max-w-96 text-6xl font-bold md:text-7xl">
+            Explore Learn and <span className="text-secondry "> Inspire</span>
           </h1>
           <p className="">
             Navigate a landscape of human stories intertwined with visionary
             ideas
           </p>
-          <Button secondry={true}>
+          <Button primary={true} onClick={() => naviagte("/sign-up")}>
             START EXPLORING <span className="text-xl font-bold"> &rarr;</span>
           </Button>
         </div>
@@ -41,7 +40,7 @@ function Home() {
       </div>
 
       <div className="absolute bottom-0 right-10 opacity-20 sm:hidden">
-        <BoyLookingUp zHeigth={0.6} zWidth={0.6} x={-72}/>
+        <BoyLookingUp zHeigth={0.6} zWidth={0.6} x={-72} />
       </div>
     </div>
   );

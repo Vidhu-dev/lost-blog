@@ -23,4 +23,46 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 }
 
-export { uploadOnCloudinary }
+const getRandomAvatarURL = async () => {
+  try {
+    console.log('Getting random avatar...');
+    const { resources } = await cloudinary.search
+      .expression('folder:vi-blog/default-avatar')
+      .execute();
+    
+    if (resources.length === 0) {
+      throw new Error('No avatar images found');
+    }
+    
+    const randomIndex = Math.floor(Math.random() * resources.length -1);
+    const randomAvatar = resources[randomIndex];
+    console.log(randomAvatar.secure_url);
+    return randomAvatar.secure_url;
+  } catch (error) {
+    console.error('Error fetching random avatar:', error);
+    return null;
+  }
+};
+
+const getRandomCoverImageURL = async () => {
+  try {
+    console.log('Getting random cover image...');
+    const { resources } = await cloudinary.search
+      .expression('folder:vi-blog/default-cover')
+      .execute();
+    
+    if (resources.length === 0) {
+      throw new Error('No cover images found');
+    }
+    
+    const randomIndex = Math.floor(Math.random() * resources.length);
+    const randomCover = resources[randomIndex];
+    console.log(randomCover.secure_url);
+    return randomCover.secure_url;
+  } catch (error) {
+    console.error('Error fetching random cover image:', error);
+    return null;
+  }
+};
+
+export { uploadOnCloudinary, getRandomAvatarURL, getRandomCoverImageURL }

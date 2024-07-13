@@ -4,7 +4,7 @@ import SearchButton from "./SearchButton";
 function SearchBar({
   name,
   padding = "pl-1 pr-5",
-  placeholder = "Search posts...",
+  placeholder = "Search",
   textSize = "text-base",
   fontWeight = "font-base",
   onClick,
@@ -29,7 +29,7 @@ function SearchBar({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-        className={`hidden sm:block ${rounded} ${padding} ${textSize} ${fontWeight} bg-background-100 focus:outline-none`}
+        className={`hidden sm:block ${rounded} ${padding} ${textSize} ${fontWeight} bg-background-100 py-1.5 focus:outline-none`}
       />
     </div>
   );

@@ -1,9 +1,14 @@
 import { asyncHandler } from '../utils/asyncHandler.js'
 import { ApiError } from '../utils/ApiError.js'
 import { User } from '../models/user.models.js'
-import { uploadOnCloudinary } from '../utils/cloudinary.js'
+import {
+  getRandomAvatarURL,
+  getRandomCoverImageURL,
+  uploadOnCloudinary,
+} from '../utils/cloudinary.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
 import jwt from 'jsonwebtoken'
+import { generateUsername } from 'friendly-username-generator'
 
 const generateAccessAndRefreshTokens = async (userID) => {
   try {
@@ -22,82 +27,170 @@ const generateAccessAndRefreshTokens = async (userID) => {
   }
 }
 
+const generateUniqueUsername = async (maxAttempts = 10) => {
+  let username
+  let attempts = 0
+
+  do {
+    username = generateUsername()
+    attempts++
+    if (attempts >= maxAttempts) {
+      throw new Error('Unable to generate a unique username')
+    }
+  } while (await User.exists({ username }))
+
+  return username
+}
+
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, fullName, email, password } = req.body
+  try {
+    console.log('Registering user...')
+    const { fullName, email, password } = req.body
+    console.log({ fullName, email, password })
 
-  if (
-    [username, fullName, email, password].some((field) => field?.trim() === '')
-  ) {
-    throw new ApiError(400, 'All fields are required!')
-  }
+    if (
+      [fullName, email, password].some(
+        (field) => field == null || field.trim() === ''
+      )
+    ) {
+      throw new ApiError(400, 'All fields are required!')
+    }
 
-  //username or email already exists in the database
-  const existingUser = await User.findOne({
-    $or: [{ email }, { username }],
-  })
+    // Check for existing user
+    const existingUser = await User.findOne({
+      $or: [{ email }],
+    })
 
-  if (existingUser) {
-    throw new ApiError(
-      400,
-      'User with entered username or email already registered'
+    if (existingUser) {
+      throw new ApiError(
+        400,
+        'User with entered username or email already registered'
+      )
+    }
+
+    const avatar = await getRandomAvatarURL()
+    const coverImage = await getRandomCoverImageURL()
+
+    if (!avatar || !coverImage) {
+      throw new ApiError(
+        500,
+        'Problem while getting avatar or coverImage from Cloudinary'
+      )
+    }
+
+    let username
+    try {
+      username = await generateUniqueUsername()
+    } catch (error) {
+      throw new ApiError(
+        500,
+        'Unable to generate a unique username. Please try again.'
+      )
+    }
+
+    console.log({ username, fullName, email, avatar, coverImage, password })
+
+    const user = await User.create({
+      fullName,
+      email,
+      avatar: avatar,
+      coverImage: coverImage,
+      password,
+      username: username.toLowerCase(),
+    })
+
+    const createdUser = await User.findById(user._id).select(
+      '-password -refreshToken'
     )
-  }
 
-  // avatar and coverImage
-  let avatarLocalPath
-  if (
-    req.files &&
-    Array.isArray(req.files.avatar) &&
-    req.files.avatar.length > 0
-  ) {
-    avatarLocalPath = req.files.avatar[0].path
-  }
-  if (!avatarLocalPath) {
-    throw new ApiError(400, 'Avatar is required.')
-  }
-  let coverImageLocalPath
-  if (
-    req.files &&
-    Array.isArray(req.files.coverImage) &&
-    req.files.coverImage.length > 0
-  ) {
-    coverImageLocalPath = req.files.coverImage[0].path
-  }
-  if (!coverImageLocalPath) {
-    throw new ApiError(400, 'CoverImage is required.')
-  }
+    console.log(createdUser)
+    if (!createdUser) {
+      throw new ApiError(500, 'Something went wrong while registering the user')
+    }
 
-  const avatar = await uploadOnCloudinary(avatarLocalPath)
-  const coverImage = await uploadOnCloudinary(coverImageLocalPath)
-
-  if (!avatar || !coverImage) {
-    throw new ApiError(
-      400,
-      'Problem while uploading avatar or coverImage on Cloudinary'
-    )
+    return res
+      .status(201)
+      .json(new ApiResponse(201, createdUser, 'User registered successfully!'))
+  } catch (error) {
+    console.log(error)
+    console.log(error.message)
+    res
+      .status(error.messageCode || 500)
+      .json(new ApiResponse(error.messageCode || 500, null, error.message))
   }
-
-  const user = await User.create({
-    fullName,
-    email,
-    avatar: avatar.url,
-    coverImage: coverImage.url,
-    password,
-    username: username.toLowerCase(),
-  })
-
-  const createdUser = await User.findById(user._id).select(
-    '-password -refreshToken'
-  )
-
-  console.log(createdUser)
-  if (!createdUser) {
-    throw new ApiError(500, 'Something went wrong while registering the user')
-  }
-  return res
-    .status(201)
-    .json(new ApiResponse(201, createdUser, 'User registered sucessfully!'))
 })
+
+
+// const registerUser = asyncHandler(async (req, res) => {
+//   console.log('Registering user...')
+//   const { fullName, email, password } = req.body
+//   console.log({ fullName, email, password })
+//   if (
+//     [fullName, email, password].some(
+//       (field) => field == null || field.trim() === ''
+//     )
+//   ) {
+//     throw new ApiError(400, 'All fields are required!')
+//   }
+
+//   //username or email already exists in the database
+//   const existingUser = await User.findOne({
+//     $or: [{ email }],
+//   })
+
+//   if (existingUser) {
+//     throw new ApiError(
+//       400,
+//       'User with entered username or email already registered'
+//     )
+//   }
+
+//   const avatar = await getRandomAvatarURL()
+//   const coverImage = await getRandomCoverImageURL()
+
+//   if (!avatar || !coverImage) {
+//     throw new ApiError(
+//       400,
+//       'Problem while getting avatar or coverImage from Cloudinary'
+//     )
+//   }
+//   let username
+//   try {
+//     username = await generateUniqueUsername()
+//   } catch (error) {
+//     throw new ApiError(
+//       500,
+//       'Unable to generate a unique username. Please try again.'
+//     )
+//   }
+//   console.log({ username, fullName, email, avatar, coverImage, password })
+
+//   try {
+//     const user = await User.create({
+//       fullName,
+//       email,
+//       avatar: avatar,
+//       coverImage: coverImage,
+//       password,
+//       username: username.toLowerCase(),
+//     })
+//     const createdUser = await User.findById(user._id).select(
+//       '-password -refreshToken'
+//     )
+
+//     console.log(createdUser)
+//     if (!createdUser) {
+//       throw new ApiError(500, 'Something went wrong while registering the user')
+//     }
+//     return res
+//       .status(201)
+//       .json(new ApiResponse(201, createdUser, 'User registered sucessfully!'))
+//   } catch (error) {
+//     res
+//       .status(error.statusCode || 500)
+//       .json(new ApiResponse(error.statusCode || 500, null, error.message))
+//   }
+// })
 
 const loginUser = asyncHandler(async (req, res) => {
   const { username, password, email } = req.body
@@ -163,7 +256,6 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
   )
 
-
   const options = {
     httpOnly: true,
     secure: true,
@@ -221,3 +313,29 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
 export { registerUser, loginUser, logoutUser, refreshAccessToken }
+  // // avatar and coverImage
+  // let avatarLocalPath
+  // if (
+  //   req.files &&
+  //   Array.isArray(req.files.avatar) &&
+  //   req.files.avatar.length > 0
+  // ) {
+  //   avatarLocalPath = req.files.avatar[0].path
+  // }
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, 'Avatar is required.')
+  // }
+  // let coverImageLocalPath
+  // if (
+  //   req.files &&
+  //   Array.isArray(req.files.coverImage) &&
+  //   req.files.coverImage.length > 0
+  // ) {
+  //   coverImageLocalPath = req.files.coverImage[0].path
+  // }
+  // if (!coverImageLocalPath) {
+  //   throw new ApiError(400, 'CoverImage is required.')
+  // }
+
+  // const avatar = await uploadOnCloudinary(avatarLocalPath)
+  // const coverImage = await uploadOnCloudinary(coverImageLocalPath)
