@@ -7,7 +7,6 @@ const intialState = {
   avatar: null,
   coverImage: "",
   bio: "",
-  refreshToken: "",
 };
 
 const userSlice = createSlice({
@@ -21,10 +20,7 @@ const userSlice = createSlice({
       state.fullName = action.payload.fullName;
       state.avatar = action.payload.avatar;
       state.coverImage = action.payload.coverImage;
-      state.bio = action.payload.bio ? action.payload.bio : "";
-      state.refreshToken = action.payload.refreshToken
-        ? action.payload.refreshToken
-        : "";
+      state.bio = action.payload.bio 
     },
     clearUser: (state) => {
       state.username = "";

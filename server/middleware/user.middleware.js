@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken'
 import { ApiError } from '../utils/ApiError.js'
 export const verfiyJWT = asyncHandler(async (req, res, next) => {
   try {
-    const token = req.cookies?.accessToken
+    // const token = req.cookies?.accessToken
+    const token = req.body.accessToken
     if (!token) {
       throw new ApiError(401, 'Unauthorized request')
     }
@@ -24,4 +25,3 @@ export const verfiyJWT = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, error.message || 'Inavlid access token')
   }
 })
-

@@ -1,11 +1,11 @@
-import { Form, Navigate, useNavigate } from "react-router-dom";
+import { Form, Link, useNavigate } from "react-router-dom";
 import ReadWriteSvg from "../../assets/ReadWriteSvg";
-import Button from "../../components/Button";
-import { Input } from "../../components/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
-import Background from "../../components/ParticleBackground";
+import Background from "../../components/hybrid/ParticleBackground";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "./authSlice";
+import { login } from "./authSlice";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
 
@@ -19,20 +19,18 @@ function Login() {
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
-    toast.dismiss();
-    toast.promise(dispatch(register({ data })).unwrap(), {
-      loading: "Registering...",
-      success: () => "Registered successfully",
 
+    toast.dismiss();
+    toast.promise(dispatch(login({ data })).unwrap(), {
+      loading: "Signing in...",
+      success: () => "Signed in successfully",
       error: (err) => err,
     });
   };
+
   useEffect(() => {
     if (isAuthenticated) {
-      //add delay of 200ms
-
-      
-      naviagte("/");
+      naviagte("/home");
     }
   }, [isAuthenticated, naviagte]);
 
@@ -48,23 +46,27 @@ function Login() {
         />
       </div>
       <Form
-        className="z-50 flex max-w-96 grow flex-col px-8"
+        className="z-50 flex max-w-96 grow flex-col px-8 gap-4"
         onSubmit={handleSubmit}
       >
-        <h1 className="p mb-3 text-center text-3xl font-bold">
-          Create Account
-        </h1>
-        <Input label={"Name"} size={"large"} name={"fullName"} type="text" />
-        <Input label={"Email"} size={"large"} name={"email"} type="email" />
+        <h1 className="p mb-3 text-center text-3xl font-bold">Welcome Back!</h1>
         <Input
-          label={"Password"}
-          size={"large"}
-          name={"password"}
-          type="password"
+          type="email"
+          placeholder="Email"
+          name="email"
+          className="focus:border-none focus-visible:ring-black/50"
         />
-        <Button type="submit" margin="my-4" dark={!loading}>
-          {loading ? "Signing up..." : " SIGN UP"}
-        </Button>
+        <Input
+          type="password"
+          placeholder="Password"
+          name="password"
+          className="focus:border-none focus-visible:ring-black/50"
+        />
+        <Button type="submit">{loading ? "Logging in..." : " LOGIN"}</Button>
+        <Link to={"/sign-up"}>
+          New to viBlog?
+          <span className="underline"> Register here &rarr;</span>
+        </Link>
       </Form>
     </div>
   );

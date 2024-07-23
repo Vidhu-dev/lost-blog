@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import { Toaster } from "react-hot-toast";
 function AppLayout() {
   return (
-    <div className="flex min-h-dvh flex-col justify-between bg-background-100 font-source text-text">
+    <div className="bg-background-100 font text-text font-display flex min-h-dvh flex-col justify-between">
       <Header />
       <Toaster
         toastOptions={{
