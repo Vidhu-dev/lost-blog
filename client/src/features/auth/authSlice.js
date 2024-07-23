@@ -3,7 +3,7 @@ import * as api from "../../utils/api";
 import { clearUser, setUser } from "../user/userSlice";
 
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: true,
   loading: false,
   refreshToken: null,
   accessToken: null,

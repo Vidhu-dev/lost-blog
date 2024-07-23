@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 function LandingPage() {
   const windowWidth = useWindowWidth();
   const naviagte = useNavigate();
+  
   return (
     <div className="relative items-center px-4 flex grow flex-col justify-center">
       <div className="absolute left-4 top-16 opacity-20 sm:hidden">

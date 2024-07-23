@@ -89,15 +89,11 @@ function Header() {
         </NavLink>
         <NavigationMenu orientation="vertical">
           <NavigationMenuList>
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavItem to={"/"}>Home</NavItem>
-                <NavItem>Blogs</NavItem>
-                <NavItem>
-                  <PenLine width={14} /> <span className="ml-2">Write</span>
-                </NavItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+            <NavItem to={"/"}>Home</NavItem>
+            <NavItem>Blogs</NavItem>
+            <NavItem>
+              <PenLine width={14} /> <span className="ml-2">Write</span>
+            </NavItem>
           </NavigationMenuList>
         </NavigationMenu>
       </div>
