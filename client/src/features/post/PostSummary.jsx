@@ -1,20 +1,21 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 function PostSummary({ post }) {
   const { title, content, publishedAt, categoryID, coverImage, likes } = post;
 
   return (
-    <li className="  flex cursor-pointer flex-wrap-reverse gap-2 border-y p-4  transition-transform ease-in-out hover:scale-105 sm:flex-nowrap">
+    <li className="flex cursor-pointer flex-wrap-reverse gap-2 border-y p-4 transition-transform ease-in-out hover:scale-105 sm:flex-nowrap">
       <div>
-        <span className=" bg-primary text-white px-1 py-0.5 text-xs font-bold uppercase">
+        <span className="bg-primary px-1 py-0.5 text-xs font-bold uppercase text-white">
           {categoryID}
         </span>
 
         <h1 className="font-semibold sm:text-xl">{title}</h1>
         <div className="flex items-center gap-3 text-xs sm:text-sm">
-          <img
-            src="/cover.svg"
-            alt="Author"
-            className="mr-1 h-6 w-6 rounded-full object-cover"
-          />
+          <Avatar className="mr-1 h-6 w-6">
+            <AvatarImage src="/cover.svg" />
+            <AvatarFallback>UA</AvatarFallback>
+          </Avatar>
           <p className="">Jason Francisco</p>
           <span>•</span>
           <p className="">{new Date(publishedAt).toLocaleDateString()}</p>

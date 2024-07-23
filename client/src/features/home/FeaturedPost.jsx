@@ -1,3 +1,5 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 function FeaturedPost({ post, className }) {
   const { title, publishedAt, categoryID } = post;
 
@@ -15,11 +17,11 @@ function FeaturedPost({ post, className }) {
         </span>
         <h1 className="mt-2 font-semibold sm:text-xl">{title}</h1>
         <div className="mt-3 flex items-center text-xs sm:text-sm">
-          <img
-            src="/cover.svg"
-            alt="Author"
-            className="mr-1 h-4 w-4 rounded-full object-cover sm:h-8 sm:w-8"
-          />
+          <Avatar className="mr-1 h-4 w-4 sm:h-8 sm:w-8">
+            <AvatarImage src="/cover.svg" />
+            <AvatarFallback>UA</AvatarFallback>
+          </Avatar>
+
           <p className="text-gray-700">Jason Francisco</p>
           <span className="mx-1 text-gray-500">•</span>
           <p className="text-gray-500">
