@@ -16,6 +16,18 @@ const categoryHelper = async (categoryName, description) => {
   }
 }
 
+const getCategories = asyncHandler(async (req, res) => {
+  try {
+    const categories = await Category.find({})
+    console.log(categories)
+    res
+      .status(200)
+      .json(new ApiResponse(200, categories, 'All categories fetched!'))
+  } catch (error) {
+    throw new ApiError(404, 'No categories found')
+  }
+})
+
 //create multiple categories
 const createCategories = asyncHandler(async (req, res) => {
   const { categories } = req.body
@@ -42,4 +54,4 @@ const createCategory = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(201, category, 'Category created!'))
 })
 
-export { createCategories, createCategory }
+export { createCategories, createCategory, getCategories }

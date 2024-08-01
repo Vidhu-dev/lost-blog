@@ -57,23 +57,26 @@ function Header() {
           <SheetContent side="left">
             <nav className="grid gap-6 font-display text-lg font-medium">
               <NavLink
-                to="/"
+                to={isAuthenticated ? "/home" : "/"}
                 className="flex items-center gap-2 text-lg font-semibold"
               >
                 <Logo zHeigth={0.1} zWidth={0.1} />
                 <span className=" ">vi-blog</span>
               </NavLink>
-              <NavLink to="#" className="hover:text-foreground">
+              <NavLink
+                to={isAuthenticated ? "/home" : "/"}
+                className="hover:text-foreground"
+              >
                 Home
               </NavLink>
               <NavLink
-                to="#"
+                to="/home"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Blogs
               </NavLink>
               <NavLink
-                to="#"
+                to="/create-post"
                 className="flex items-center text-muted-foreground hover:text-foreground"
               >
                 <span className="mr-2">Write</span> <PenLine width={18} />
@@ -89,9 +92,9 @@ function Header() {
         </NavLink>
         <NavigationMenu orientation="vertical">
           <NavigationMenuList>
-            <NavItem to={"/"}>Home</NavItem>
-            <NavItem>Blogs</NavItem>
-            <NavItem>
+            <NavItem to={isAuthenticated ? "/home" : "/"}>Home</NavItem>
+            <NavItem to={isAuthenticated ? "/home" : "/"}>Blogs</NavItem>
+            <NavItem to={isAuthenticated ? "/create-post" : "/"}>
               <PenLine width={14} /> <span className="ml-2">Write</span>
             </NavItem>
           </NavigationMenuList>

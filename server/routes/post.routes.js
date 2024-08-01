@@ -13,11 +13,11 @@ import {
   getPost,
 } from '../controllers/post.controller.js'
 import { getPostByTag } from '../controllers/tag.controller.js'
-import {
-  comment,
-  deleteComment,
-  getAllPostComments,
-} from '../models/comment.models.js'
+// import {
+//   comment,
+//   deleteComment,
+//   getAllPostComments,
+// } from '../models/comment.models.js'
 const router = new Router()
 
 router.route('/create-post').post(
@@ -36,12 +36,12 @@ router.route('/update-post').patch(updatePostField)
 router.route('/delete-post').delete(deletePost)
 router.route('/get-post').get(getPost)
 //like and unlike
-router.route('/like-post').post(verfiyJWT, likePost)
-router.route('/unlike-post').delete(verfiyJWT, unlikePost)
+// router.route('/like-post').post(verfiyJWT, likePost)
+// router.route('/unlike-post').delete(verfiyJWT, unlikePost)
 
-//comment
+// //comment
 
-router.route('/comment').post(verfiyJWT, comment)
-router.route('delete-comment').delete(verfiyJWT, deleteComment)
-router.route('get-coomments').get(getAllPostComments)
+// router.route('/comment').post(verfiyJWT, comment)
+// router.route('delete-comment').delete(verfiyJWT, deleteComment)
+// router.route('get-coomments').get(getAllPostComments)
 export default router

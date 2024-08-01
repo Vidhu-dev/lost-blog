@@ -7,6 +7,8 @@ const intialState = {
   avatar: null,
   coverImage: "",
   bio: "",
+  userID: "",
+ 
 };
 
 const userSlice = createSlice({
@@ -14,13 +16,13 @@ const userSlice = createSlice({
   initialState: intialState,
   reducers: {
     setUser: (state, action) => {
-      console.log(action.payload);
       state.username = action.payload.username;
       state.email = action.payload.email;
       state.fullName = action.payload.fullName;
       state.avatar = action.payload.avatar;
       state.coverImage = action.payload.coverImage;
-      state.bio = action.payload.bio 
+      state.bio = action.payload.bio;
+      state.userID = action.payload._id;
     },
     clearUser: (state) => {
       state.username = "";
@@ -29,7 +31,7 @@ const userSlice = createSlice({
       state.avatar = null;
       state.coverImage = "";
       state.bio = "";
-
+      state.userID = "";
       state.refreshToken = "";
     },
     setUserAvatar: (state, action) => {

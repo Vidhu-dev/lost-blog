@@ -1,12 +1,14 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
 import AppLayout from "./ui/AppLayout";
-import Home from "./features/home/Home";
+import Home, { loader as homeLoader } from "./features/home/Home";
 import Error from "./ui/Error";
 import LandingPage from "./features/landing page/LandingPage";
 import SignUp from "./features/auth/SignUp";
 import Login from "./features/auth/Login";
-import CreatePost from "./features/post/CreatePost";
+import CreatePost, {
+  loader as createPostLoader,
+} from "./features/post/CreatePost";
 // import Temp from "./features/auth/Temp";
 const router = createBrowserRouter([
   {
@@ -25,6 +27,7 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <Home />,
+        loader: homeLoader,
       },
       {
         path: "login",
@@ -33,6 +36,7 @@ const router = createBrowserRouter([
       {
         path: "/create-post",
         element: <CreatePost />,
+        loader: createPostLoader,
       },
     ],
   },

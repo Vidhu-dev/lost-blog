@@ -9,7 +9,7 @@ function NavItem({ children, to, className }) {
   return (
     <NavigationMenuItem className={className}>
       <Link to={to} >
-        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+        <NavigationMenuLink  className={navigationMenuTriggerStyle()}>
           {children}
         </NavigationMenuLink>
       </Link>

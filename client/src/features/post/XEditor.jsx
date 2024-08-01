@@ -60,6 +60,8 @@ import {
 } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { useDispatch } from "react-redux";
+import { setEditor } from "./createpostSlice";
 
 function ToolBarPlugin({ editor }) {
   if (!editor) {
@@ -568,7 +570,8 @@ const EditorMode = ({ isEditable, setIsEditable }) => {
   );
 };
 const placeholderContent = " Start writing your blog post here...";
-function XEditor({editorContent="", setEditorContent}) {
+function XEditor() {
+  const dispatch = useDispatch();
   const editor = useEditor({
     extensions: [
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -601,24 +604,25 @@ function XEditor({editorContent="", setEditorContent}) {
     autofocus: true,
   });
   const [isEditable, setIsEditable] = useState(true);
-  
+
   const [isSaved, setIsSaved] = useState(false);
   useEffect(() => {
     if (editor) {
+      dispatch(setEditor(editor));
       editor.setEditable(isEditable);
       {
         isEditable && setIsSaved(false);
       }
     }
-  }, [isEditable, editor]);
+  }, [isEditable, editor, dispatch]);
 
-  function handleContentSave() {
-    if (editor) {
-      setEditorContent(editor.getJSON());
-      setIsEditable(false);
-      setIsSaved(true);
-    }
-  }
+  // function handleContentSave() {
+  //   if (editor) {
+  //     setEditorContent(editor.getJSON());
+  //     setIsEditable(false);
+  //     setIsSaved(true);
+  //   }
+  // }
   return (
     <>
       {editor && (
@@ -627,7 +631,7 @@ function XEditor({editorContent="", setEditorContent}) {
         </BubbleMenu>
       )}
       <div
-        className={`sticky top-2 z-40 flex rounded-lg border bg-white ${isEditable ? "justify-between" : "justify-end"} px-1 py-1`}
+        className={`sticky top-0 z-40 flex rounded-lg border bg-white ${isEditable ? "justify-between" : "justify-end"} px-1 py-1`}
       >
         {isEditable && <ToolBarPlugin editor={editor} />}
         <EditorMode
@@ -636,15 +640,7 @@ function XEditor({editorContent="", setEditorContent}) {
           editor={editor}
         />
       </div>
-      <EditorContent editor={editor} />{" "}
-      <div className="my-2 flex justify-end">
-        <Button
-          onClick={handleContentSave}
-          variant={isSaved ? "secondary" : ""}
-        >
-          Save
-        </Button>
-      </div>
+      <EditorContent editor={editor} />
     </>
   );
 }

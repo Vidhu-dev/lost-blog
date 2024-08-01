@@ -4,15 +4,13 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSelector } from "react-redux";
 
-function Categories() {
-  const categories = useSelector((state) => state.categories.categories);
-  console.log(categories);
+function Categories({categories}) {
+  
   return (
-    <div className="border-y py-1 w-11/12  sm:w-3/4">
-      <ScrollArea className="  ">
+    <div className="w-11/12 border-y py-1 sm:w-3/4">
+      <ScrollArea className=" ">
         <NavigationMenu>
           <NavigationMenuList>
             {categories.map((category) => (

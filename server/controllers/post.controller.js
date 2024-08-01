@@ -6,7 +6,8 @@ import { ApiResponse } from '../utils/ApiResponse.js'
 //create Post
 const createPost = asyncHandler(async (req, res) => {
   console.log('Create Post triggred....')
-  const { title, content, status, categoryID } = req.body
+  console.log(JSON.parse(req.body.post))
+  const { title, content, status, categoryID } = JSON.parse(req.body.post)
   if (!title || !categoryID || !status) {
     throw new ApiError(
       401,
@@ -33,14 +34,16 @@ const createPost = asyncHandler(async (req, res) => {
       'Some error occurred while uploading cover image to cloduinary'
     )
   }
+  console.log(coverImage.url)
 
   const post = await Post.create({
     authorID: req.user._id,
     title,
     content,
     categoryID,
-    coverImage,
+    coverImage: coverImage.url,
     status,
+    likes: 0,
   })
 
   if (!post) {
@@ -75,7 +78,7 @@ const changePostCoverImage = asyncHandler(async (req, res) => {
     postID,
     {
       $set: {
-        coverImage: newCoverImage,
+        coverImage: newCoverImage.url,
       },
     },
     {
@@ -200,5 +203,5 @@ export {
   getAllPost,
   getPostsByUser,
   getPostsByCategory,
-  getPost
+  getPost,
 }

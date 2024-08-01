@@ -3,37 +3,45 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   categories: [
     {
-      categoryName: "All",
-      description: "All posts",
-      _id: "0",
-    },
-    {
       categoryName: "Technology",
       description: "All things tech-related",
       _id: "1",
     },
     {
-      categoryName: "Health",
+      categoryName: "Health & Wellness",
       description: "Health and wellness topics",
       _id: "2",
     },
     {
-      categoryName: "Travel",
+      categoryName: "Travel Guides",
       description: "Travel tips and destination guides",
       _id: "3",
     },
-    { categoryName: "Food", description: "Recipes and food reviews", _id: "4" },
     {
-      categoryName: "Health",
-      description: "Health and wellness topics",
+      categoryName: "Gourmet Food",
+      description: "Recipes and food reviews",
       _id: "4",
     },
     {
-      categoryName: "Travel",
-      description: "Travel tips and destination guides",
-      _id: "5",
+      categoryName: "Fitness",
+      description: "Fitness and exercise tips",
+      _id: "8",
     },
-    { categoryName: "Food", description: "Recipes and food reviews", _id: "6" },
+    {
+      categoryName: "Personal Finance",
+      description: "Advice on managing your money",
+      _id: "9",
+    },
+    {
+      categoryName: "DIY Projects",
+      description: "Do it yourself guides and tips",
+      _id: "10",
+    },
+    {
+      categoryName: "Art & Design",
+      description: "Exploring creativity and design",
+      _id: "11",
+    },
   ],
   category: "All",
 };

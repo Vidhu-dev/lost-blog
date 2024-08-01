@@ -186,7 +186,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
   console.log('loggind out user...')
-  console.log(req.body)
+  console.log(req.user._id)
   const updateUser = User.findByIdAndUpdate(
     req.user._id,
     {
