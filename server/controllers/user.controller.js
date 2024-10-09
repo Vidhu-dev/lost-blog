@@ -159,13 +159,13 @@ const loginUser = asyncHandler(async (req, res) => {
     const optionsAccess = {
       httpOnly: true,
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000 * process.env.ACCESS_TOKEN_AGE,
+      // maxAge: 24 * 60 * 60 * 1000 * process.env.ACCESS_TOKEN_AGE,
       sameSite: 'none',
     }
     const optionsRefresh = {
       httpOnly: true,
       secure: true,
-      maxAge: 24 * 60 * 60 * 1000 * process.env.REFRESH_TOKEN_AGE,
+      // maxAge: 24 * 60 * 60 * 1000 * process.env.REFRESH_TOKEN_AGE,
       sameSite: 'none',
     }
     return res
