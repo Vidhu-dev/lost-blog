@@ -33,10 +33,10 @@ router.route('/create-post').post(
   createPost
 )
 
-router.route('/:postId/cover-image').post(changePostCoverImage)
-router.route('/update-post').patch(updatePostField)
-router.route('/delete-post').delete(deletePost)
-router.route('/get-post/:id').get(getPost);
+// router.route('/:postId/cover-image').post(changePostCoverImage)
+// router.route('/update-post').patch(updatePostField)
+// router.route('/delete-post').delete(deletePost)
+router.route('/get-post/:id').get(verfiyJWT, getPost);
 
 //like and unlike
 // router.route('/like-post').post(verfiyJWT, likePost)

@@ -10,5 +10,5 @@ const router = Router()
 
 router.route('/create-category').post(verfiyJWT, createCategory)
 router.route('/create-categories').post(verfiyJWT, createCategories)
-router.route('/get-categories').get(getCategories)
+router.route('/get-categories').get(verfiyJWT, getCategories)
 export default router
