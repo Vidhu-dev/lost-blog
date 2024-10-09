@@ -16,9 +16,11 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { logout } from "@/features/auth/authSlice";
+import { logout, setAuthTrue } from "@/features/auth/authSlice";
+import { fetchUserData } from "@/features/user/userSlice";
 
 import { Menu, PenLine, SearchIcon } from "lucide-react";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
@@ -28,6 +30,7 @@ function Header() {
   const { avatar } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const location = useLocation();
+
   function handleLogout() {
     const formData = new FormData();
     formData.append("accessToken", accessToken);
@@ -40,6 +43,14 @@ function Header() {
       error: (err) => err,
     });
   }
+
+  useEffect(() => {
+    if (localStorage.getItem("isAuth") === "Yes") {
+      dispatch(setAuthTrue());
+      dispatch(fetchUserData());
+    }
+  }, []);
+
   return (
     <div className="mt-1 flex items-center justify-around border-y py-1 text-black/70 backdrop-blur sm:py-0">
       <div className="sm:hidden">
@@ -69,12 +80,12 @@ function Header() {
               >
                 Home
               </NavLink>
-              <NavLink
+              {/* <NavLink
                 to="/home"
                 className="text-muted-foreground hover:text-foreground"
               >
                 Blogs
-              </NavLink>
+              </NavLink> */}
               <NavLink
                 to="/create-post"
                 className="flex items-center text-muted-foreground hover:text-foreground"
@@ -93,7 +104,7 @@ function Header() {
         <NavigationMenu orientation="vertical">
           <NavigationMenuList>
             <NavItem to={isAuthenticated ? "/home" : "/"}>Home</NavItem>
-            <NavItem to={isAuthenticated ? "/home" : "/"}>Blogs</NavItem>
+            {/* <NavItem to={isAuthenticated ? "/home" : "/"}>Blogs</NavItem> */}
             <NavItem to={isAuthenticated ? "/create-post" : "/"}>
               <PenLine width={14} /> <span className="ml-2">Write</span>
             </NavItem>

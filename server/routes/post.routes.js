@@ -13,6 +13,7 @@ import {
   getPost,
 } from '../controllers/post.controller.js'
 import { getPostByTag } from '../controllers/tag.controller.js'
+import { createPostSummary } from '../middleware/post.midlleware.js'
 // import {
 //   comment,
 //   deleteComment,
@@ -28,13 +29,15 @@ router.route('/create-post').post(
     },
   ]),
   verfiyJWT,
+  createPostSummary,
   createPost
 )
 
 router.route('/:postId/cover-image').post(changePostCoverImage)
 router.route('/update-post').patch(updatePostField)
 router.route('/delete-post').delete(deletePost)
-router.route('/get-post').get(getPost)
+router.route('/get-post/:id').get(getPost);
+
 //like and unlike
 // router.route('/like-post').post(verfiyJWT, likePost)
 // router.route('/unlike-post').delete(verfiyJWT, unlikePost)

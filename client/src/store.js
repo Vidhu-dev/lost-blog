@@ -7,7 +7,7 @@ const store = configureStore({
   reducer: {
     user: userReducer,
     auth: authReducer,
-    categories: categoryReducer,
+    category: categoryReducer,
     createPost: createPostReducer,
   },
 });

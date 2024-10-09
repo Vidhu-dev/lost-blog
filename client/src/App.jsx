@@ -9,6 +9,7 @@ import Login from "./features/auth/Login";
 import CreatePost, {
   loader as createPostLoader,
 } from "./features/post/CreatePost";
+import PostContent from "./features/post/PostContent";
 // import Temp from "./features/auth/Temp";
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
         path: "/create-post",
         element: <CreatePost />,
         loader: createPostLoader,
+      },
+      {
+        path: "/post/:id",
+        element: <PostContent />,
       },
     ],
   },

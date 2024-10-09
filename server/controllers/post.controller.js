@@ -3,11 +3,14 @@ import { ApiError } from '../utils/ApiError.js'
 import { Post } from '../models/post.models.js'
 import { uploadOnCloudinary } from '../utils/cloudinary.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
+import mongoose from 'mongoose'
 //create Post
 const createPost = asyncHandler(async (req, res) => {
   console.log('Create Post triggred....')
   console.log(JSON.parse(req.body.post))
   const { title, content, status, categoryID } = JSON.parse(req.body.post)
+  const summary = req.body.postSummary
+  console.log(summary)
   if (!title || !categoryID || !status) {
     throw new ApiError(
       401,
@@ -34,7 +37,6 @@ const createPost = asyncHandler(async (req, res) => {
       'Some error occurred while uploading cover image to cloduinary'
     )
   }
-  console.log(coverImage.url)
 
   const post = await Post.create({
     authorID: req.user._id,
@@ -44,6 +46,7 @@ const createPost = asyncHandler(async (req, res) => {
     coverImage: coverImage.url,
     status,
     likes: 0,
+    summary,
   })
 
   if (!post) {
@@ -138,32 +141,77 @@ const deletePost = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, 'Post deleted successfully'))
 })
 
-//get post
-
 const getPost = asyncHandler(async (req, res) => {
-  const { postID } = req.body
+  const postId = req.params.id
+  console.log('Fetching post with ID:', postId)
 
   try {
-    const post = await Post.findById(postID)
+    const post = await Post.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(postId) } },
 
-    if (!post) {
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'authorID',
+          foreignField: '_id',
+          as: 'authorDetails',
+        },
+      },
+      { $unwind: '$authorDetails' },
+
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categoryID',
+          foreignField: '_id',
+          as: 'categoryDetails',
+        },
+      },
+      { $unwind: '$categoryDetails' },
+    ])
+
+    if (!post || post.length === 0) {
       throw new ApiError(404, 'Post not found')
     }
-
+console.log(post)
     res
       .status(200)
-      .json(new ApiResponse(200, post, 'Post fetched successfully'))
+      .json(new ApiResponse(200, post[0], 'Post fetched successfully'))
   } catch (error) {
+    console.error(`Error fetching post: ${error.message}`)
     throw new ApiError(500, `Error fetching post: ${error.message}`)
   }
 })
 
 // list all Posts
 const getAllPost = asyncHandler(async (req, res) => {
-  const posts = await Post.find({})
+  const posts = await Post.aggregate([
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'authorID',
+        foreignField: '_id',
+        as: 'authorDetails',
+      },
+    },
+
+    { $unwind: '$authorDetails' },
+
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'categoryID',
+        foreignField: '_id',
+        as: 'categoryDetails',
+      },
+    },
+
+    { $unwind: '$categoryDetails' },
+  ])
   if (posts.length === 0) {
     throw new ApiError(404, 'No post found')
   }
+  console.log(posts)
   res
     .status(200)
     .json(new ApiResponse(200, posts, 'All posts retrieved successfully'))
@@ -195,7 +243,58 @@ const getPostsByCategory = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, posts, 'Posts retrieved successfully'))
 })
 
+const getTopRatedPosts = asyncHandler(async (req, res) => {
+  try {
+    // Fetch 3 random posts and join them with authors (users) and categories
+    const randomPosts = await Post.aggregate([
+      { $sample: { size: 3 } },
+
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'authorID',
+          foreignField: '_id',
+          as: 'authorDetails',
+        },
+      },
+
+      { $unwind: '$authorDetails' },
+
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categoryID',
+          foreignField: '_id',
+          as: 'categoryDetails',
+        },
+      },
+
+      { $unwind: '$categoryDetails' },
+    ])
+
+    if (!randomPosts || randomPosts.length === 0) {
+      throw new ApiError(404, 'No posts found')
+    }
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          randomPosts,
+          'Top rated posts fetched successfully'
+        )
+      )
+  } catch (error) {
+    console.error(error)
+    return res
+      .status(error.statusCode || 500)
+      .json(new ApiResponse(error.statusCode || 500, null, error.message))
+  }
+})
+
 export {
+  getTopRatedPosts,
   createPost,
   changePostCoverImage,
   updatePostField,

@@ -43,6 +43,7 @@ const generateUniqueUsername = async (maxAttempts = 10) => {
 }
 
 const registerUser = asyncHandler(async (req, res) => {
+  console.log(req)
   try {
     console.log('Registering user...')
     const { fullName, email, password } = req.body
@@ -155,15 +156,22 @@ const loginUser = asyncHandler(async (req, res) => {
     )
     console.log(loggedInUser)
     console.log('Tokens are:', accessToken, refreshToken)
-    const options = {
+    const optionsAccess = {
       httpOnly: true,
       secure: true,
+      maxAge: 24 * 60 * 60 * 1000 * process.env.ACCESS_TOKEN_AGE,
+      sameSite: 'Lax',
     }
-
+    const optionsRefresh = {
+      httpOnly: true,
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000 * process.env.REFRESH_TOKEN_AGE,
+      sameSite: 'Lax',
+    }
     return res
       .status(200)
-      .cookie('accessToken', accessToken, options)
-      .cookie('refreshToken', refreshToken, options)
+      .cookie('accessToken', accessToken, optionsAccess)
+      .cookie('refreshToken', refreshToken, optionsRefresh)
       .json(
         new ApiResponse(
           200,
@@ -182,6 +190,19 @@ const loginUser = asyncHandler(async (req, res) => {
       .status(error.messageCode || 500)
       .json(new ApiResponse(error.messageCode || 500, null, error.message))
   }
+})
+
+const getUserData = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select(
+    '-password -refreshToken'
+  )
+  if (!user) {
+    throw new ApiError(404, 'User not found')
+  }
+  console.log('Sending user data!', user)
+  res
+    .status(200)
+    .json(new ApiResponse(200, { user }, 'User data fetched successfully'))
 })
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -253,30 +274,4 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 })
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken }
-// // avatar and coverImage
-// let avatarLocalPath
-// if (
-//   req.files &&
-//   Array.isArray(req.files.avatar) &&
-//   req.files.avatar.length > 0
-// ) {
-//   avatarLocalPath = req.files.avatar[0].path
-// }
-// if (!avatarLocalPath) {
-//   throw new ApiError(400, 'Avatar is required.')
-// }
-// let coverImageLocalPath
-// if (
-//   req.files &&
-//   Array.isArray(req.files.coverImage) &&
-//   req.files.coverImage.length > 0
-// ) {
-//   coverImageLocalPath = req.files.coverImage[0].path
-// }
-// if (!coverImageLocalPath) {
-//   throw new ApiError(400, 'CoverImage is required.')
-// }
-
-// const avatar = await uploadOnCloudinary(avatarLocalPath)
-// const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+export { registerUser, loginUser, logoutUser, refreshAccessToken, getUserData }

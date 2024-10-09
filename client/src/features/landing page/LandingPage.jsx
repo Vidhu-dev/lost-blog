@@ -4,12 +4,18 @@ import BoyLookingUp from "../../assets/BoyLookingUp";
 import DisplayBoard from "../../assets/DisplayBoard";
 import { useWindowWidth } from "../../hooks/useWindowWidth";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 function LandingPage() {
   const windowWidth = useWindowWidth();
   const naviagte = useNavigate();
-  
+  const nav = useNavigate();
+  useEffect(() => {
+    if (localStorage.getItem("isAuth") === "Yes") {
+      nav("/home");
+    }
+  }, []);
   return (
-    <div className="relative items-center px-4 flex grow flex-col justify-center">
+    <div className="relative flex grow flex-col items-center justify-center px-4">
       <div className="absolute left-4 top-16 opacity-20 sm:hidden">
         <DisplayBoard zHeigth={0.4} zWidth={0.4} />
       </div>

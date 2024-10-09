@@ -17,9 +17,9 @@ const categoryHelper = async (categoryName, description) => {
 }
 
 const getCategories = asyncHandler(async (req, res) => {
+  console.log("Get categories called ... !")
   try {
     const categories = await Category.find({})
-    console.log(categories)
     res
       .status(200)
       .json(new ApiResponse(200, categories, 'All categories fetched!'))

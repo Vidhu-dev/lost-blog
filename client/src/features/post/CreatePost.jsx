@@ -25,8 +25,10 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { getCategories } from "@/utils/api";
-import { useLoaderData } from "react-router-dom";
+
+import { useLoaderData, useNavigate } from "react-router-dom";
+// import { getCategories } from "../home/categorySlice";
+import { get_categories } from "@/utils/api";
 
 function CreatePost() {
   const [coverImage, setCoverImage] = useState(null);
@@ -36,11 +38,12 @@ function CreatePost() {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const { editor } = useSelector((state) => state.createPost);
-  const categories = useLoaderData();
+  const { categories } = useLoaderData();
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     setCoverImage(file);
   };
+  const nav = useNavigate();
 
   function handleContentSave() {
     setEditorContent(editor.getJSON());
@@ -71,6 +74,7 @@ function CreatePost() {
       error: (err) => err,
     });
     setIsDrawerOpen(false);
+    nav("/home");
   }
 
   return (
@@ -165,6 +169,7 @@ function CreatePost() {
 export default CreatePost;
 
 export async function loader() {
-  const categories = await getCategories();
-  return categories.data;
+  const categories = await get_categories();
+  console.log(categories);
+  return { categories: categories.data };
 }

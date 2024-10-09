@@ -1,55 +1,45 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { get_categories } from "@/utils/api";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 
 const initialState = {
-  categories: [
-    {
-      categoryName: "Technology",
-      description: "All things tech-related",
-      _id: "1",
-    },
-    {
-      categoryName: "Health & Wellness",
-      description: "Health and wellness topics",
-      _id: "2",
-    },
-    {
-      categoryName: "Travel Guides",
-      description: "Travel tips and destination guides",
-      _id: "3",
-    },
-    {
-      categoryName: "Gourmet Food",
-      description: "Recipes and food reviews",
-      _id: "4",
-    },
-    {
-      categoryName: "Fitness",
-      description: "Fitness and exercise tips",
-      _id: "8",
-    },
-    {
-      categoryName: "Personal Finance",
-      description: "Advice on managing your money",
-      _id: "9",
-    },
-    {
-      categoryName: "DIY Projects",
-      description: "Do it yourself guides and tips",
-      _id: "10",
-    },
-    {
-      categoryName: "Art & Design",
-      description: "Exploring creativity and design",
-      _id: "11",
-    },
-  ],
-  category: "All",
+  status: "idle",
+  categories: [],
 };
+
+export const getCategories = createAsyncThunk(
+  "category/getCategories",
+  async (_, { rejectWithValue }) => {
+    console.log("getting categories");
+    try {
+      const response = await get_categories();
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response ? error.response.data : error.message);
+    }
+  }
+);
+
 
 export const categorySlice = createSlice({
   name: "category",
   initialState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCategories.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getCategories.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.categories = action.payload;
+      })
+      .addCase(getCategories.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
+  },
 });
 
 export default categorySlice.reducer;

@@ -10,12 +10,26 @@ const initialState = {
   error: null,
 };
 
+export const setAuthTrue = createAsyncThunk(
+  "auth/setAuthTrue",
+  async (_, thunkAPI) => {
+    try {
+      localStorage.setItem("isAuth", "Yes");
+      return { isAuthenticated: true };
+    } catch (error) {
+      return thunkAPI.rejectWithValue("Failed to set authentication");
+    }
+  },
+);
+
 export const register = createAsyncThunk(
   "auth/register",
   async ({ data }, thunkAPI) => {
+    console.log(data);
     try {
       const response = await api.signup(data);
       thunkAPI.dispatch(setUser(response.data.data.user));
+      localStorage.setItem("isAuth", "Yes");
       return response.data.data;
     } catch (error) {
       let errorMessage;
@@ -37,6 +51,7 @@ export const login = createAsyncThunk(
       const response = await api.login(data);
       console.log(response);
       thunkAPI.dispatch(setUser(response.data.data.user));
+      localStorage.setItem("isAuth", "Yes");
       return response.data.data;
     } catch (error) {
       let errorMessage;
@@ -54,9 +69,11 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk(
   "auth/logout",
   async ({ data }, thunkAPI) => {
+    localStorage.setItem("isAuth", "No");
     try {
       const response = await api.logout(data);
       thunkAPI.dispatch(clearUser());
+      localStorage.setItem("isAuth", "No");
       return response.data.data;
     } catch (error) {
       let errorMessage;
@@ -120,6 +137,13 @@ const authSlice = createSlice({
       })
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(setAuthTrue.fulfilled, (state) => {
+        state.isAuthenticated = true;
+      })
+      .addCase(setAuthTrue.rejected, (state, action) => {
         state.error = action.payload;
       });
   },

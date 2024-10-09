@@ -1,8 +1,10 @@
+import CharacterCount from "@tiptap/extension-character-count";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect } from "react";
 
-function DisplayPost({ post }) {
+function DisplayPostContent({ post }) {
+  console.log(post);
   const defaultContent = {
     type: "doc",
     content: [
@@ -19,12 +21,12 @@ function DisplayPost({ post }) {
   };
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, CharacterCount.configure()],
+    editable: false,
     content: post || defaultContent,
     editorProps: {
       attributes: {
-        class:
-          "prose prose-sm sm:prose-base max-w-none m-5 focus:outline-none",
+        class: "prose prose-sm sm:prose-base max-w-none m-5 focus:outline-none",
       },
     },
   });
@@ -42,4 +44,4 @@ function DisplayPost({ post }) {
   );
 }
 
-export default DisplayPost;
+export default DisplayPostContent;
