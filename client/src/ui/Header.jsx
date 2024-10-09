@@ -23,13 +23,14 @@ import { Menu, PenLine, SearchIcon } from "lucide-react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function Header() {
   const { isAuthenticated, accessToken } = useSelector((state) => state.auth);
   const { avatar } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const location = useLocation();
+  const nav = useNavigate();
 
   function handleLogout() {
     const formData = new FormData();
@@ -42,6 +43,7 @@ function Header() {
       success: () => "Logged out successfully",
       error: (err) => err,
     });
+    nav("/");
   }
 
   useEffect(() => {
